@@ -4,11 +4,26 @@ package mwoj.Blockchain;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class Blockchain {
 
+    private ArrayList<Block> blocks;
 
-    public Block generateNewBlock(Block lastBlock, String dataForNewBlock) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Blockchain() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        blocks = new ArrayList<>();
+        String hash = Hasher.getHash("startBlock");
+        Block startBlock = new Block(0, hash, "", "Data", new Timestamp(System.currentTimeMillis()).toString() );
+        blocks.add(startBlock);
+    }
+
+    public Block getLastBlock()
+    {
+        return blocks.get(blocks.size()-1);
+    }
+
+    public Block generateNewBlock(String dataForNewBlock) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Block lastBlock = getLastBlock();
         int index = lastBlock.getIndex() + 1;
         String timestamp = new Timestamp(System.currentTimeMillis()).toString();
         String hash = calculateBlockHash(lastBlock.getHash(), dataForNewBlock,timestamp, index);
