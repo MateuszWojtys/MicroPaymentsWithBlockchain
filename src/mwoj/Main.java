@@ -13,5 +13,12 @@ public class Main {
 		Blockchain blockchain = new Blockchain();
 
 	    Block newBlock = blockchain.generateNewBlock("data2");
+		blockchain.addNewBlock(newBlock);
+
+		Block newBlock2 = blockchain.generateNewBlock("data3");
+		blockchain.addNewBlock(newBlock2);
+
+		Boolean verification = blockchain.isChainValid();
+		System.out.println(verification.toString());
     }
 }
