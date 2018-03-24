@@ -12,12 +12,12 @@ public class Blockchain {
     private ArrayList<Block> blocks;
     public static HashMap<String,TransactionOutput> allUnspentTransactions;
     public static int difficulty;
-    Wallet coinbase;
+    WalletClient genesisWallet;
     Transaction genesisTransaction;
 
     public Blockchain() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         blocks = new ArrayList<>();
-        coinbase = new Wallet("Coinbase");
+        genesisWallet = new WalletClient("Genesis");
         allUnspentTransactions = new HashMap<String,TransactionOutput>();
         difficulty = 2;
         createGenesisTransaction();
@@ -36,13 +36,13 @@ public class Blockchain {
     public void feedWallet(Wallet toFeed, int value) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Block tmp = generateNewBlock("Block", difficulty);
         System.out.println("Feeding wallet " + toFeed.getName() + " with value " + value);
-        tmp.addTransaction(coinbase.createTransaction(toFeed.getPublicKey(), value));
+        tmp.addTransaction(genesisWallet.createTransaction(toFeed.getPublicKey(), value));
         addNewBlock(tmp);
     }
 
     private void createGenesisTransaction() throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        genesisTransaction = new Transaction(coinbase.getPublicKey(), coinbase.getPublicKey(), 0, new ArrayList<TransactionInput>());
-        genesisTransaction.generateSignature(coinbase.getPrivateKey());
+        genesisTransaction = new Transaction(genesisWallet.getPublicKey(), genesisWallet.getPublicKey(), 0, new ArrayList<TransactionInput>());
+        genesisTransaction.generateSignature(genesisWallet.getPrivateKey());
         genesisTransaction.transactionId = "0";
         genesisTransaction.outputs.add(new TransactionOutput(genesisTransaction.receiver, genesisTransaction.value, genesisTransaction.transactionId));
         allUnspentTransactions.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
