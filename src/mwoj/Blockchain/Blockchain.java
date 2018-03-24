@@ -12,11 +12,15 @@ public class Blockchain {
     private ArrayList<Block> blocks;
     public static HashMap<String,TransactionOutput> allUnspentTransactions;
     public static int difficulty;
-    public Blockchain()
-    {
+    Wallet coinbase;
+    Transaction genesisTransaction;
+
+    public Blockchain() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         blocks = new ArrayList<>();
+        coinbase = new Wallet("Coinbase");
         allUnspentTransactions = new HashMap<String,TransactionOutput>();
         difficulty = 2;
+        createGenesisTransaction();
     }
 
     public Block getLastBlock()
@@ -29,15 +33,31 @@ public class Blockchain {
         blocks.add(newBlock);
     }
 
-    //TODO: Przerobic metode tak zeby nie uzywala genesisTransaction jako parametr - dodac genesis jako zmienna stała blockchainu
-    public  Boolean validateBlockchain(Transaction genesisTransaction) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void feedWallet(Wallet toFeed, int value) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Block tmp = generateNewBlock("Block", difficulty);
+        System.out.println("Feeding wallet " + toFeed.getName() + " with value " + value);
+        tmp.addTransaction(coinbase.createTransaction(toFeed.getPublicKey(), value));
+        addNewBlock(tmp);
+    }
+
+    private void createGenesisTransaction() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        genesisTransaction = new Transaction(coinbase.getPublicKey(), coinbase.getPublicKey(), 0, new ArrayList<TransactionInput>());
+        genesisTransaction.generateSignature(coinbase.getPrivateKey());
+        genesisTransaction.transactionId = "0";
+        genesisTransaction.outputs.add(new TransactionOutput(genesisTransaction.receiver, genesisTransaction.value, genesisTransaction.transactionId));
+        allUnspentTransactions.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
+        System.out.println("Creating and Mining Genesis block... ");
+        Block genesis = generateNewBlock("GenesisBlock", Blockchain.difficulty);
+        genesis.addTransaction(genesisTransaction);
+        addNewBlock(genesis);
+    }
+
+    public  Boolean validateBlockchain() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Block currentBlock;
         Block previousBlock;
         String hashTarget = new String(new char[difficulty]).replace('\0', '0');
         HashMap<String,TransactionOutput> tempUnspentTransactions = new HashMap<String,TransactionOutput>();
-
-        genesisTransaction.outputs.add(new TransactionOutput(genesisTransaction.receiver, genesisTransaction.value, genesisTransaction.transactionId)); //manually add the Transactions Output
-
+        genesisTransaction.outputs.add(new TransactionOutput(genesisTransaction.receiver, genesisTransaction.value, genesisTransaction.transactionId));
         tempUnspentTransactions.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
 
 
@@ -65,8 +85,6 @@ public class Blockchain {
                 System.out.println("#Previous Hashes not equal");
                 return false;
             }
-
-
 
 
             TransactionOutput tempOutput;

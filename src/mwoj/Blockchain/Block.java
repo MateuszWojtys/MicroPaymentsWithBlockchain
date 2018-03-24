@@ -36,7 +36,7 @@ public class Block{
     public boolean addTransaction(Transaction transaction) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         //process transaction and check if valid, unless block is genesis block then ignore.
         if(transaction == null) return false;
-        if((previousBlockHash != "0")) {
+        if((previousBlockHash != "")) {
             if((transaction.processTransaction() != true)) {
                 System.out.println("Transaction failed to process. Discarded.");
                 return false;
