@@ -19,7 +19,6 @@ public class Main {
 		Wallet testWallet = new Wallet("TestWallet");
 		blockchain.feedWallet(testWallet, 55);
 		System.out.println(testWallet.getName() + ": " + testWallet.getBalance());
-
 		blockchain.validateBlockchain();
 
 
