@@ -21,6 +21,5 @@ public class Main {
 		System.out.println(testWallet.getName() + ": " + testWallet.getBalance());
 		blockchain.validateBlockchain();
 
-
     }
 }
