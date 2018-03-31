@@ -1,5 +1,6 @@
 package mwoj.Blockchain;
 
+import javax.crypto.Cipher;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Base64;
@@ -16,7 +17,7 @@ public class Hasher{
         return hashedData;
     }
 
-    public static byte[] createSignature(PrivateKey privateKey, String input) {
+    public static byte[] createSignatureWithPrivate(PrivateKey privateKey, String input) {
         Signature rsa;
         byte[] output;
         try {
@@ -30,6 +31,23 @@ public class Hasher{
             throw new RuntimeException(e);
         }
         return output;
+    }
+
+    public static String encrypt(String plainText, PublicKey publicKey) throws Exception {
+        Cipher encryptCipher = Cipher.getInstance("RSA");
+        encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+        byte[] cipherText = encryptCipher.doFinal(plainText.getBytes());
+        return Base64.getEncoder().encodeToString(cipherText);
+    }
+
+    public static String decrypt(String cipherText, PrivateKey privateKey) throws Exception {
+        byte[] bytes = Base64.getDecoder().decode(cipherText);
+
+        Cipher decriptCipher = Cipher.getInstance("RSA");
+        decriptCipher.init(Cipher.DECRYPT_MODE, privateKey);
+
+        return new String(decriptCipher.doFinal(bytes));
     }
 
     public static boolean verifySignature(PublicKey publicKey, String data, byte[] signature) {
