@@ -7,6 +7,7 @@ public class Coin {
     private String previousCoinHash;
     byte[] signature;
 
+
     public Coin()
     {
 

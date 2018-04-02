@@ -1,5 +1,7 @@
 package mwoj.Blockchain;
 
+import mwoj.CoinDistributor.Coin;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
@@ -13,8 +15,10 @@ public abstract class Wallet {
     private PublicKey publicKey;
     public HashMap<String,TransactionOutput> myUnspentTransactions;
     private String name;
+    public ArrayList<Coin> myCoins;
 
     public Wallet(String _name){
+        myCoins = new ArrayList<>();
         myUnspentTransactions = new HashMap<String,TransactionOutput>();
         generateKeyPair();
         name = _name;

@@ -1,6 +1,8 @@
 package mwoj.Blockchain;
 
 
+import mwoj.CoinDistributor.Coin;
+
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
@@ -33,9 +35,13 @@ public class Blockchain {
         blocks.add(newBlock);
     }
 
-    public void feedWallet(Wallet toFeed, int value) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void feedWallet(Wallet toFeed, int value, ArrayList<Coin> coins) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Block tmp = generateNewBlock("Block", difficulty);
         System.out.println("Feeding wallet " + toFeed.getName() + " with value " + value);
+        for(int i=0; i<coins.size();i++)
+        {
+            toFeed.myCoins.add(coins.get(i));
+        }
         tmp.addTransaction(genesisWallet.createTransaction(toFeed.getPublicKey(), value));
         addNewBlock(tmp);
     }

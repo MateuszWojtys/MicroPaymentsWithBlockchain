@@ -1,40 +1,33 @@
 package mwoj;
 
-import mwoj.Blockchain.Blockchain;
-import mwoj.Blockchain.Hasher;
-import mwoj.Blockchain.WalletClient;
-import mwoj.CoinDistributor.Coin;
-import mwoj.CoinDistributor.CoinDistributor;
-
-import java.util.ArrayList;
-
 public class Main {
 
 
     public static void main(String[] args) throws Exception {
 
-		WalletClient testWallet = new WalletClient("TestWallet");
-    	String test = "TEst";
-		String encrypted = Hasher.encrypt(test, testWallet.getPublicKey());
-		System.out.println(encrypted);
-		String decrypted = Hasher.decrypt(encrypted, testWallet.getPrivateKey());
-		System.out.println(decrypted);
+		new Thread(new Server()).start();
 
+		Client client = new Client();
+		client.downloadPDF();
 
+    	/*
+		Blockchain blockchain = new Blockchain();
 		CoinDistributor coinDistributor = new CoinDistributor();
 
-		ArrayList<Coin> testCoins = coinDistributor.createCoins(100, testWallet.getPublicKey());
-		Blockchain blockchain = new Blockchain();
+		WalletClient testWallet = new WalletClient("TestWallet");
+
+		ArrayList<Coin> coins = coinDistributor.createCoins(55);
 
 		//WalletClient testWallet = new WalletClient("TestWallet");
-		blockchain.feedWallet(testWallet, 55);
+		blockchain.feedWallet(testWallet, 55, coins);
 		System.out.println(testWallet.getName() + ": " + testWallet.getBalance());
 
-
+		ArrayList<Coin> coins2 = coinDistributor.createCoins(20);
 		WalletClient receiver = new WalletClient("receiver");
-		blockchain.feedWallet(receiver, 20);
+		blockchain.feedWallet(receiver, 20, coins2);
 		System.out.println(receiver.getName() + ": " + receiver.getBalance());
 
 		blockchain.validateBlockchain();
+		*/
     }
 }

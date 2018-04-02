@@ -26,13 +26,14 @@ public class CoinDistributor {
         lastGeneratedCoin = genesisCoin;
     }
 
-    public ArrayList<Coin> createCoins(int amount, PublicKey owner) throws NoSuchAlgorithmException {
+
+
+    public ArrayList<Coin> createCoins(int amount) throws Exception {
         ArrayList<Coin> coins = new ArrayList<>();
         for(int i=0; i<amount; i++)
         {
             coins.add(createNextCoin());
         }
-        //TODO zrobic podpis kluczem publicznym ownera
         return coins;
     }
 
