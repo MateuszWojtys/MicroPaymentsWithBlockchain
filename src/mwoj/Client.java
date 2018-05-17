@@ -1,9 +1,8 @@
 package mwoj;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.json.JSONObject;
+
+import java.io.*;
 import java.net.Socket;
 
 public class Client {
@@ -18,6 +17,15 @@ public class Client {
     public final static int FILE_SIZE = 6022386; // file size temporary hard coded
     // should bigger than the file to be downloaded
 
+
+
+
+
+
+
+
+
+
     public void downloadPDF() throws IOException {
         int bytesRead;
         int current = 0;
@@ -27,6 +35,16 @@ public class Client {
         try {
             sock = new Socket(SERVER, SOCKET_PORT);
             System.out.println("Connecting...");
+
+
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("test", "test");
+            String test = "tets";
+            byte[] string = test.getBytes();
+
+            OutputStream outputStream = sock.getOutputStream();
+            outputStream.write(string);
 
             // receive file
             byte [] mybytearray  = new byte [FILE_SIZE];

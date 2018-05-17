@@ -16,24 +16,32 @@ public class Server implements Runnable{
         ServerSocket servsock = null;
         Socket sock = null;
         try {
+
             servsock = new ServerSocket(SOCKET_PORT);
             while (true) {
                 System.out.println("Waiting...");
                 try {
                     sock = servsock.accept();
                     System.out.println("Accepted connection : " + sock);
-                    // send file
-                    File myFile = new File (FILE_TO_SEND);
-                    byte [] mybytearray  = new byte [(int)myFile.length()];
-                    fis = new FileInputStream(myFile);
-                    bis = new BufferedInputStream(fis);
-                    bis.read(mybytearray,0,mybytearray.length);
-                    os = sock.getOutputStream();
-                    System.out.println("Sending " + FILE_TO_SEND + "(" + mybytearray.length + " bytes)");
-                    os.write(mybytearray,0,mybytearray.length);
-                    os.flush();
-                    System.out.println("Done.");
-                }
+
+                    DataInputStream dis = new DataInputStream(sock.getInputStream());
+                    String requestType = dis.readUTF();
+                    System.out.println("Request received: " + requestType);
+                    if(requestType.equals("Test"))
+                    {
+                        String string = "Example response";
+                        System.out.println("Sending response...");
+                        DataOutputStream dos = null;
+                        dos = new DataOutputStream(sock.getOutputStream());
+                        dos.writeUTF(string);
+                        System.out.println("Response sent...");
+                    }
+                    else
+                    {
+
+                    }
+                    }
+
                 finally {
                     if (bis != null) bis.close();
                     if (os != null) os.close();
@@ -55,3 +63,16 @@ public class Server implements Runnable{
         }
     }
 }
+
+/* // send file
+                        File myFile = new File (FILE_TO_SEND);
+                        byte[] mybytearray  = new byte [(int)myFile.length()];
+                        fis = new FileInputStream(myFile);
+                        bis = new BufferedInputStream(fis);
+                        bis.read(mybytearray,0,mybytearray.length);
+                        os = sock.getOutputStream();
+                        System.out.println("Sending " + FILE_TO_SEND + "(" + mybytearray.length + " bytes)");
+                        os.write(mybytearray,0,mybytearray.length);
+                        os.flush();
+                        System.out.println("Done.");
+                        */

@@ -1,14 +1,23 @@
 package mwoj;
 
+
+import mwoj.PayChainClient.PayChainClient;
+import mwoj.PayChainServer.PayChainServer;
+import org.json.JSONObject;
+
 public class Main {
 
-
+    private final static String myName = "Main|||";
     public static void main(String[] args) throws Exception {
 
-		new Thread(new Server()).start();
 
-		Client client = new Client();
-		client.downloadPDF();
+        new Thread(new PayChainServer(15000)).start();
+
+        PayChainClient client = new PayChainClient("127.0.0.1", 15000);
+
+        client.sendMessage("Message");
+
+        client.sendMessageWithData("MessageWithData", new JSONObject());
 
     	/*
 		Blockchain blockchain = new Blockchain();
