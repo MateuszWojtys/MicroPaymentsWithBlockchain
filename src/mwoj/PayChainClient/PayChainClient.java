@@ -59,9 +59,7 @@ public class PayChainClient {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
-
         };
 
         t.start();
