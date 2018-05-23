@@ -1,4 +1,4 @@
-package mwoj.Blockchain;
+package mwoj.TransactionsProc;
 
 public class TransactionInput {
 

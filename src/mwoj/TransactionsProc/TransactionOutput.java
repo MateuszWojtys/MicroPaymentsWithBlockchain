@@ -1,4 +1,6 @@
-package mwoj.Blockchain;
+package mwoj.TransactionsProc;
+
+import mwoj.Crypto.Hasher;
 
 import java.io.UnsupportedEncodingException;
 import java.security.*;

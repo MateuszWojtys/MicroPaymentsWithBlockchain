@@ -18,8 +18,7 @@ public class PayChainClient {
         SERVER_PORT = serverPort;
     }
 
-    public JSONObject sendMessage(String header) {
-
+    public JSONObject sendMessage(String header, boolean additionalData) {
         final JSONObject[] responseData = new JSONObject[1];
         Thread t = new Thread() {
 
@@ -29,30 +28,19 @@ public class PayChainClient {
                     socket = new Socket(SERVER_IP, SERVER_PORT);
                     DataOutputStream dos = null;
                     dos = new DataOutputStream(socket.getOutputStream());
-                    Logger.log(myName, "Wysyłam wiadomosc: " + header +
-                    " do " + SERVER_IP + " " + SERVER_PORT);
                     dos.writeUTF(header);
-                    dos.writeBoolean(false);
-                    Logger.log(myName, "Odbieram wiadomosc...");
+                    dos.writeBoolean(additionalData);
                     DataInputStream dis = new DataInputStream(socket.getInputStream());
 
-                    //Nagłówek wiadomości
                     String response = dis.readUTF();
-                    //Czy sa dane
-                    boolean readData = dis.readBoolean();
-                    Logger.log(myName, "Odebrana wiadomosc: " + response);
-                    if(readData)
-                    {
+                    boolean readAdditionalResponseData = dis.readBoolean();
+                    if(readAdditionalResponseData) {
                         String data = dis.readUTF();
                         responseData[0] = new JSONObject(data);
-                        Logger.log(myName, "Odebrane dane: " + data);
                     }
-                    else
-                    {
+                    else {
                         responseData[0] = new JSONObject();
-                        Logger.log(myName, "Wiadomosc bez danych");
                     }
-
                     dos.flush();
                     dos.close();
 
@@ -61,7 +49,6 @@ public class PayChainClient {
                 }
             }
         };
-
         t.start();
         return responseData[0];
     }
@@ -91,18 +78,24 @@ public class PayChainClient {
                     String response = dis.readUTF();
                     //Czy sa dane
                     boolean readData = dis.readBoolean();
-                    Logger.log(myName, "Odebrana wiadomosc: " + response);
-                    if(readData)
+                    switch (response)
                     {
-                        String data = dis.readUTF();
-                        responseData[0] = new JSONObject(data);
-                        Logger.log(myName, "Odebrane dane: " + data);
+                        case "GenesisBlockAdded":
+                            Logger.log(myName, "Odebrana wiadomosc: " + response);
+                            break;
+                        case "BlockAdded":
+                            Logger.log(myName, "Odebrana wiadomosc: " + response);
+                            break;
+
+                        case "FakeBlock":
+                            Logger.log(myName, "Odebrana wiadomosc: " + response);
+
+                            break;
+                        default:
+                            Logger.log(myName, "Odebrana wiadomosc: Wrong response header");
+                            break;
                     }
-                    else
-                    {
-                        responseData[0] = new JSONObject();
-                        Logger.log(myName, "Wiadomosc bez danych");
-                    }
+
 
                     dos.flush();
                     dos.close();
